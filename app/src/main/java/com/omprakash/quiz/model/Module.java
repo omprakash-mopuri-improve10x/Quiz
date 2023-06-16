@@ -7,7 +7,7 @@ public class Module {
     private Integer number;
     private String name;
     private Integer questions;
-    private Integer revision;
+    private String revision;
 
     public Integer getNumber() {
         return number;
@@ -33,11 +33,11 @@ public class Module {
         this.questions = questions;
     }
 
-    public Integer getRevision() {
+    public String getRevision() {
         return revision;
     }
 
-    public void setRevision(Integer revision) {
+    public void setRevision(String revision) {
         this.revision = revision;
     }
 }

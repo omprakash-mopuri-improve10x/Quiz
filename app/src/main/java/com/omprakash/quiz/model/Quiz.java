@@ -2,12 +2,14 @@ package com.omprakash.quiz.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 public class Quiz {
 
     @SerializedName("_id")
     private String id;
     private Module module;
-    private Question question;
+    private ArrayList<Question> questions;
 
     public String getId() {
         return id;
@@ -25,11 +27,11 @@ public class Quiz {
         this.module = module;
     }
 
-    public Question getQuestion() {
-        return question;
+    public ArrayList<Question> getQuestions() {
+        return questions;
     }
 
-    public void setQuestion(Question question) {
-        this.question = question;
+    public void setQuestions(ArrayList<Question> questions) {
+        this.questions = questions;
     }
 }
