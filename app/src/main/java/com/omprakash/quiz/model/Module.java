@@ -1,4 +1,4 @@
-package com.omprakash.quiz;
+package com.omprakash.quiz.model;
 
 import android.content.Intent;
 
