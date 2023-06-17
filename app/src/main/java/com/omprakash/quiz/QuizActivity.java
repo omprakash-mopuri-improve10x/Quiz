@@ -37,22 +37,6 @@ public class QuizActivity extends AppCompatActivity {
         setupRv();
     }
 
-    private void setupAdapter() {
-        questionNumbersAdapter = new QuestionNumbersAdapter();
-        questionNumbersAdapter.setQuestions(questions);
-        questionNumbersAdapter.setOnItemActionListener(new OnItemActionListener() {
-            @Override
-            public void onItemClicked(Question question) {
-                showData(question);
-            }
-        });
-    }
-
-    private void setupRv() {
-        binding.questionsNumberRv.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
-        binding.questionsNumberRv.setAdapter(questionNumbersAdapter);
-    }
-
     private void getQuizzes() {
         QuizApiService quizApiService = new QuizApi().createQuizApiService();
         Call<List<Quiz>> quizzes = quizApiService.fetchQuizzes();
@@ -74,11 +58,38 @@ public class QuizActivity extends AppCompatActivity {
         });
     }
 
+    private void setupAdapter() {
+        questionNumbersAdapter = new QuestionNumbersAdapter();
+        questionNumbersAdapter.setQuestions(questions);
+        questionNumbersAdapter.setOnItemActionListener(new OnItemActionListener() {
+            @Override
+            public void onItemClicked(Question question) {
+                showData(question);
+            }
+        });
+    }
+
+    private void setupRv() {
+        binding.questionsNumberRv.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+        binding.questionsNumberRv.setAdapter(questionNumbersAdapter);
+    }
+
     private void showData(Question question) {
+        showQuestion(question);
+        setQuestionNumberColor();
+    }
+
+    private void showQuestion(Question question) {
+        currentQuestionNumber = question.getNumber() - 1;
         binding.questionTxt.setText(question.getQuestion());
         binding.answer1Rb.setText(question.getAnswers().get(0));
         binding.answer2Rb.setText(question.getAnswers().get(1));
         binding.answer3Rb.setText(question.getAnswers().get(2));
         binding.answer4Rb.setText(question.getAnswers().get(3));
+    }
+
+    private void setQuestionNumberColor() {
+        questionNumbersAdapter.currentQuestionPosition = currentQuestionNumber;
+        questionNumbersAdapter.notifyDataSetChanged();
     }
 }

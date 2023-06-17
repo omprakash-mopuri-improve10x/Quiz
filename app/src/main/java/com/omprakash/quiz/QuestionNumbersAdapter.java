@@ -1,5 +1,6 @@
 package com.omprakash.quiz;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -16,6 +17,8 @@ public class QuestionNumbersAdapter extends RecyclerView.Adapter<QuestionNumberV
     private List<Question> questions;
 
     private OnItemActionListener onItemActionListener;
+
+    public Integer currentQuestionPosition = 0;
 
     void setQuestions(List<Question> questions) {
         this.questions = questions;
@@ -38,6 +41,13 @@ public class QuestionNumbersAdapter extends RecyclerView.Adapter<QuestionNumberV
     public void onBindViewHolder(@NonNull QuestionNumberViewHolder holder, int position) {
         Question question = questions.get(position);
         holder.binding.questionNumberTxt.setText(String.valueOf(question.getNumber()));
+        if (currentQuestionPosition == position) {
+            holder.binding.questionNumberTxt.setTextColor(Color.parseColor("#F57C00"));
+            holder.binding.materialCardView.setStrokeColor(Color.parseColor("#F57C00"));
+        } else {
+            holder.binding.questionNumberTxt.setTextColor(Color.parseColor("#000000"));
+            holder.binding.materialCardView.setStrokeColor(Color.parseColor("#000000"));
+        }
         holder.binding.getRoot().setOnClickListener(v -> {
             onItemActionListener.onItemClicked(question);
         });
