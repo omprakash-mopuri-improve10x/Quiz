@@ -2,11 +2,13 @@ package com.omprakash.quiz.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 public class Question {
 
     private Integer number;
     private String question;
-    private String[] answers;
+    private ArrayList<String> answers;
     @SerializedName("correct_answer")
     private Integer correctAnswer;
 
@@ -26,11 +28,11 @@ public class Question {
         this.question = question;
     }
 
-    public String[] getAnswers() {
+    public ArrayList<String> getAnswers() {
         return answers;
     }
 
-    public void setAnswers(String[] answers) {
+    public void setAnswers(ArrayList<String> answers) {
         this.answers = answers;
     }
 

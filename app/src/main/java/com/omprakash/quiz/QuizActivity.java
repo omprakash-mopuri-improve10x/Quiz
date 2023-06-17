@@ -40,6 +40,12 @@ public class QuizActivity extends AppCompatActivity {
     private void setupAdapter() {
         questionNumbersAdapter = new QuestionNumbersAdapter();
         questionNumbersAdapter.setQuestions(questions);
+        questionNumbersAdapter.setOnItemActionListener(new OnItemActionListener() {
+            @Override
+            public void onItemClicked(Question question) {
+                showData(question);
+            }
+        });
     }
 
     private void setupRv() {
@@ -57,6 +63,7 @@ public class QuizActivity extends AppCompatActivity {
                     List<Quiz> quizzes = response.body();
                     questionNumbersAdapter.setQuestions(quizzes.get(0).getQuestions());
                     questions = quizzes.get(0).getQuestions();
+                    showData(questions.get(0));
                 }
             }
 
@@ -68,7 +75,10 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void showData(Question question) {
-        currentQuestionNumber = question.getNumber() - 1;
         binding.questionTxt.setText(question.getQuestion());
+        binding.answer1Rb.setText(question.getAnswers().get(0));
+        binding.answer2Rb.setText(question.getAnswers().get(1));
+        binding.answer3Rb.setText(question.getAnswers().get(2));
+        binding.answer4Rb.setText(question.getAnswers().get(3));
     }
 }
