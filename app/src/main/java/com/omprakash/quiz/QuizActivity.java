@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RadioGroup;
@@ -28,7 +29,7 @@ public class QuizActivity extends AppCompatActivity {
     private QuestionNumbersAdapter questionNumbersAdapter;
     private ArrayList<Question> questions = new ArrayList<>();
     private Integer currentQuestionNumber = 0;
-    private Integer[] correctAnswers;
+    private Integer[] answerOptionsIndexes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,7 @@ public class QuizActivity extends AppCompatActivity {
         handleNext();
         handlePrevious();
         setRadioGroup();
+        handleSubmit();
     }
 
     private void getQuizzes() {
@@ -52,7 +54,7 @@ public class QuizActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     List<Quiz> quizzes = response.body();
                     questionNumbersAdapter.setQuestions(quizzes.get(0).getQuestions());
-                    correctAnswers = new Integer[quizzes.get(0).getQuestions().size()];
+                    answerOptionsIndexes = new Integer[quizzes.get(0).getQuestions().size()];
                     questions = quizzes.get(0).getQuestions();
                     showData(questions.get(0));
                 }
@@ -96,14 +98,14 @@ public class QuizActivity extends AppCompatActivity {
         binding.answer2Rb.setText(question.getAnswers().get(1));
         binding.answer3Rb.setText(question.getAnswers().get(2));
         binding.answer4Rb.setText(question.getAnswers().get(3));
-        if (correctAnswers[currentQuestionNumber] != null) {
-            if (correctAnswers[currentQuestionNumber] == 0) {
+        if (answerOptionsIndexes[currentQuestionNumber] != null) {
+            if (answerOptionsIndexes[currentQuestionNumber] == 0) {
                 binding.answer1Rb.setChecked(true);
-            } else if (correctAnswers[currentQuestionNumber] == 1) {
+            } else if (answerOptionsIndexes[currentQuestionNumber] == 1) {
                 binding.answer2Rb.setChecked(true);
-            } else if (correctAnswers[currentQuestionNumber] == 2) {
+            } else if (answerOptionsIndexes[currentQuestionNumber] == 2) {
                 binding.answer3Rb.setChecked(true);
-            } else if (correctAnswers[currentQuestionNumber] == 3) {
+            } else if (answerOptionsIndexes[currentQuestionNumber] == 3) {
                 binding.answer4Rb.setChecked(true);
             }
         }
@@ -153,15 +155,37 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (binding.answer1Rb.isChecked()) {
-                    correctAnswers[currentQuestionNumber] = 0;
+                    answerOptionsIndexes[currentQuestionNumber] = 0;
                 } else if (binding.answer2Rb.isChecked()) {
-                    correctAnswers[currentQuestionNumber] = 1;
+                    answerOptionsIndexes[currentQuestionNumber] = 1;
                 } else if (binding.answer3Rb.isChecked()) {
-                    correctAnswers[currentQuestionNumber] = 2;
+                    answerOptionsIndexes[currentQuestionNumber] = 2;
                 } else if (binding.answer4Rb.isChecked()) {
-                    correctAnswers[currentQuestionNumber] = 3;
+                    answerOptionsIndexes[currentQuestionNumber] = 3;
                 }
             }
+        });
+    }
+
+    private int[] getQuizResult() {
+        int[] quizResults = new int[2];
+        for (int i = 0; i < questions.size(); i++) {
+            if (questions.get(i).getCorrectAnswer() == answerOptionsIndexes[i]) {
+                quizResults[0]++;
+            } else {
+                quizResults[1]++;
+            }
+        }
+        return quizResults;
+    }
+
+    private void handleSubmit() {
+        binding.submitBtn.setOnClickListener(v -> {
+            int[] quizResults = getQuizResult();
+            Intent intent = new Intent(this, QuizResultsActivity.class);
+            intent.putExtra("Correct Answers", quizResults[0]);
+            intent.putExtra("Wrong Answers", quizResults[1]);
+            startActivity(intent);
         });
     }
 }
