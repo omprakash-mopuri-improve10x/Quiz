@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.omprakash.quiz.databinding.ActivityQuizBinding;
@@ -27,6 +28,7 @@ public class QuizActivity extends AppCompatActivity {
     private QuestionNumbersAdapter questionNumbersAdapter;
     private ArrayList<Question> questions = new ArrayList<>();
     private Integer currentQuestionNumber = 0;
+    private Integer[] correctAnswers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,7 @@ public class QuizActivity extends AppCompatActivity {
         setupRv();
         handleNext();
         handlePrevious();
+        setRadioGroup();
     }
 
     private void getQuizzes() {
@@ -49,6 +52,7 @@ public class QuizActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     List<Quiz> quizzes = response.body();
                     questionNumbersAdapter.setQuestions(quizzes.get(0).getQuestions());
+                    correctAnswers = new Integer[quizzes.get(0).getQuestions().size()];
                     questions = quizzes.get(0).getQuestions();
                     showData(questions.get(0));
                 }
@@ -86,11 +90,23 @@ public class QuizActivity extends AppCompatActivity {
 
     private void showQuestion(Question question) {
         currentQuestionNumber = question.getNumber() - 1;
+        binding.radioGroup.clearCheck();
         binding.questionTxt.setText(question.getQuestion());
         binding.answer1Rb.setText(question.getAnswers().get(0));
         binding.answer2Rb.setText(question.getAnswers().get(1));
         binding.answer3Rb.setText(question.getAnswers().get(2));
         binding.answer4Rb.setText(question.getAnswers().get(3));
+        if (correctAnswers[currentQuestionNumber] != null) {
+            if (correctAnswers[currentQuestionNumber] == 0) {
+                binding.answer1Rb.setChecked(true);
+            } else if (correctAnswers[currentQuestionNumber] == 1) {
+                binding.answer2Rb.setChecked(true);
+            } else if (correctAnswers[currentQuestionNumber] == 2) {
+                binding.answer3Rb.setChecked(true);
+            } else if (correctAnswers[currentQuestionNumber] == 3) {
+                binding.answer4Rb.setChecked(true);
+            }
+        }
     }
 
     private void setQuestionNumberColor() {
@@ -130,5 +146,22 @@ public class QuizActivity extends AppCompatActivity {
         } else {
             binding.previousBtn.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void setRadioGroup() {
+        binding.radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (binding.answer1Rb.isChecked()) {
+                    correctAnswers[currentQuestionNumber] = 0;
+                } else if (binding.answer2Rb.isChecked()) {
+                    correctAnswers[currentQuestionNumber] = 1;
+                } else if (binding.answer3Rb.isChecked()) {
+                    correctAnswers[currentQuestionNumber] = 2;
+                } else if (binding.answer4Rb.isChecked()) {
+                    correctAnswers[currentQuestionNumber] = 3;
+                }
+            }
+        });
     }
 }
