@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.omprakash.quiz.databinding.ActivityQuizBinding;
@@ -35,6 +36,8 @@ public class QuizActivity extends AppCompatActivity {
         getQuizzes();
         setupAdapter();
         setupRv();
+        handleNext();
+        handlePrevious();
     }
 
     private void getQuizzes() {
@@ -77,6 +80,8 @@ public class QuizActivity extends AppCompatActivity {
     private void showData(Question question) {
         showQuestion(question);
         setQuestionNumberColor();
+        setNextAndSubmitBtnsVisibility();
+        setPreviousBtnVisibility();
     }
 
     private void showQuestion(Question question) {
@@ -91,5 +96,39 @@ public class QuizActivity extends AppCompatActivity {
     private void setQuestionNumberColor() {
         questionNumbersAdapter.currentQuestionPosition = currentQuestionNumber;
         questionNumbersAdapter.notifyDataSetChanged();
+    }
+
+    private void handleNext() {
+        binding.nextBtn.setOnClickListener(v -> {
+            currentQuestionNumber++;
+            Question question = questions.get(currentQuestionNumber);
+            showData(question);
+        });
+    }
+
+    private void handlePrevious() {
+        binding.previousBtn.setOnClickListener(v -> {
+            currentQuestionNumber--;
+            Question question = questions.get(currentQuestionNumber);
+            showData(question);
+        });
+    }
+
+    private void setNextAndSubmitBtnsVisibility() {
+        if (currentQuestionNumber == questions.size() - 1) {
+            binding.submitBtn.setVisibility(View.VISIBLE);
+            binding.nextBtn.setVisibility(View.INVISIBLE);
+        } else {
+            binding.nextBtn.setVisibility(View.VISIBLE);
+            binding.submitBtn.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void setPreviousBtnVisibility() {
+        if (currentQuestionNumber == 0) {
+            binding.previousBtn.setVisibility(View.INVISIBLE);
+        } else {
+            binding.previousBtn.setVisibility(View.VISIBLE);
+        }
     }
 }
